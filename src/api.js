@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001'; // Or your JSON server port
+const API_BASE_URL = 'http://localhost:3001'; 
 
 export const fetchProducts = async () => {
       try {
@@ -60,7 +60,7 @@ export const fetchProducts = async () => {
                throw new Error(`http Error on Delete method: ${response.status}`)
                }
        
-           return await response.ok;
+           return response.ok;
          }catch(error){ console.error('error when deleting product:',error);
       throw error;
   }

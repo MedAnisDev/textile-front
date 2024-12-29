@@ -2,22 +2,23 @@ import React, { useState, useEffect } from 'react';
 import ProductTable from './ProductTable';
 import ProductForm from './ProductForm';
 import EditModal from './EditModal';
-import { fetchProducts, createProduct, updateProduct, deleteProduct } from '../api';
+import { fetchAllProducts, createProduct, fetchAllProductsByCategory, updateProduct , deleteProductById } from '../service/product/product';
 import Spinner from "../components/Spinner"; // Import spinner for loading indicator
 function AdminDashboard() {
     const [products, setProducts] = useState([]);
-    const [editingProduct, setEditingProduct] = useState(null);
+    const [editingProduct, setEditingProduct] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newProductFormOpen, setNewProductFormOpen] = useState(false)
-    const [loading, setLoading] = useState(true); // Add loading state for overall component
-    const [formLoading, setFormLoading] = useState(false); // Loading state for the form
+    
+    const [loading, setLoading] = useState(true); 
+    const [formLoading, setFormLoading] = useState(false); 
 
     useEffect(() => {
         const loadProducts = async () => {
             setLoading(true);
             try {
-               const data =  await fetchProducts();
-                setProducts(data)
+               const data =  await fetchAllProducts(1);
+               setProducts(data.products)
             } catch (error) {
                 console.error("Error fetching:", error);
              }finally {
@@ -44,10 +45,15 @@ function AdminDashboard() {
     setIsModalOpen(false);
        setEditingProduct(null)
      };
-  const handleAddProduct = async (newProduct) => {
+
+  const handleAddProduct = async (files , jsonProduct) => {
+    const formdata = new FormData();
+    formdata.append("files",files);
+    formdata.append("jsonProduct",jsonProduct);
+
       setFormLoading(true)
         try {
-            const addedProduct = await createProduct(newProduct)
+            const addedProduct = await createProduct(formdata)
             setProducts([...products, addedProduct]);
           handleProductAddClose()
 
@@ -77,7 +83,7 @@ function AdminDashboard() {
 const handleDelete = async (productId) => {
    setFormLoading(true);
     try {
-         await deleteProduct(productId);
+         await deleteProductById(productId);
 
         //re-filter
        const filtered = products.filter((p) => p.id !== productId);
