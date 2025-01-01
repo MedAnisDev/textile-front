@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { fetchAllProductsByCategory } from '../service/product/product';
 
-function CategoryFilter({ categories, activeCategory, onCategoryChange }) {
+
+const CategoryFilter = ({ categories, activeCategory, onCategoryChange })=> {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -10,15 +12,16 @@ function CategoryFilter({ categories, activeCategory, onCategoryChange }) {
     const handleCategorySelect = (category) => {
         onCategoryChange(category);
           setIsOpen(false)
-       };
+    };
 
-       useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-               setIsOpen(false);
-           }
+    useEffect(() => {
+     const handleClickOutside = (event) => {
+         if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setIsOpen(false);
+        }
       };
     document.addEventListener("mousedown", handleClickOutside);
+
 
      return () => {
         document.removeEventListener("mousedown", handleClickOutside);
@@ -35,9 +38,6 @@ function CategoryFilter({ categories, activeCategory, onCategoryChange }) {
              id="menu-button" aria-expanded="false" aria-haspopup="true"
             >
              {activeCategory}
-             <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-            </svg>
               </button>
            </div>
 

@@ -15,12 +15,16 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [displayedProducts, setDisplayedProducts] = useState([]);
+
   const handleFetchAllProduct = async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetchAllProducts(1);
       setFilteredProducts(response.products);
+      console.log("filteredProducts :",filteredProducts);
+      
       setProducts(response.products);
 
       const allCategories = [
@@ -56,9 +60,35 @@ function Home() {
     }
   };
 
+  const displayNextProduct = () => {
+
+    setTimeout(() => {
+      console.log("displayedProducts :",displayedProducts);
+      console.log("products :",products);
+      console.log("filteredProducts :",filteredProducts);
+      
+
+      if (displayedProducts.length < filteredProducts.length) {
+        setDisplayedProducts((prev) => [
+          ...prev,
+          filteredProducts[prev.length],
+        ]);
+      }
+
+    }, 500);
+  }
+
+// Initial fetch of products
   useEffect(() => {
     handleFetchAllProduct();
   }, []);
+
+  useEffect(() => {
+    if(filteredProducts.length > displayedProducts.length){
+      displayNextProduct();
+    }
+  }, [displayedProducts, filteredProducts]);
+
 
   return (
     <div className="w-full mx-auto ">
@@ -81,12 +111,9 @@ function Home() {
       </section>
 
       <section className="bg-backgroundproduct p-8">
-        {/* Category Filter */}
-      <CategoryFilter
-        categories={categories}
-        activeCategory={activeCategory}
-        onCategoryChange={handleCategoryChange}
-      />
+      
+      {/* Category Filter */}
+  
 
       {/* Error Handling */}
       {error && (
@@ -104,12 +131,12 @@ function Home() {
         <>
           {/* Display Products */}
           <div className="bg-backgroundproduct product-grid">
-            {filteredProducts.length === 0 ? (
+            {products.length === 0 ? (
               <div className="col-span-full text-center text-gray-500">
                 No products found in this category.
               </div>
             ) : (
-              filteredProducts.map((product) => (
+              displayedProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}

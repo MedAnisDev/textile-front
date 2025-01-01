@@ -20,6 +20,7 @@ const ProductCard = ({ product, onShowDetails }) => {
     }
   };
 
+
   useEffect(() => {
     if (product?.id) {
       handleDownloadImages();
